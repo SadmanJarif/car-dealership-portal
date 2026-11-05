@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"Dealers back-end service for IBM Course 12 capstone (demo data only, in-memory)","main":"server.js","name":"dealers-service","scripts":{"start":"node server.js"},"version":"1.0.0"}
