@@ -10,6 +10,7 @@ urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
+    path("api/me/", views.api_me, name="api_me"),
     path("api/dealers/", views.api_dealers, name="api_dealers"),
     path("api/dealers/<int:dealer_id>/", views.api_dealer_detail, name="api_dealer_detail"),
     path("api/dealers/<int:dealer_id>/reviews/", views.api_dealer_reviews, name="api_dealer_reviews"),
