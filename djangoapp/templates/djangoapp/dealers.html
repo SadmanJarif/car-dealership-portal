@@ -1,0 +1,2 @@
+{% extends "djangoapp/base.html" %}{% block title %}Dealers - Car Dealership{% endblock %}{% block content %}
+<h1>Dealers</h1>{% for d in dealers %}<div class="card"><h3><a href="/dealer/{{ d.id }}/">{{ d.full_name }}</a></h3><p>{{ d.city }}, {{ d.state }} — {{ d.address }}, {{ d.zip }}</p></div>{% empty %}<p>No dealers yet.</p>{% endfor %}{% endblock %}

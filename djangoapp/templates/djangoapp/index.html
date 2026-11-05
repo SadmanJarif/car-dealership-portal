@@ -1,0 +1,3 @@
+{% extends "djangoapp/base.html" %}{% block title %}Home - Car Dealership{% endblock %}{% block content %}
+<h1>Welcome to the Car Dealership Portal</h1><p>Browse dealers, read reviews, and find your next car. One place to practise buying — with real dealer listings and reviews.</p>
+<h2>Our Dealers</h2>{% for d in dealers %}<div class="card"><h3><a href="/dealer/{{ d.id }}/">{{ d.full_name }}</a></h3><p>{{ d.city }}, {{ d.state }} — {{ d.address }}</p></div>{% empty %}<p>No dealers yet. Add some in <a href="/admin/">Django admin</a>.</p>{% endfor %}{% endblock %}

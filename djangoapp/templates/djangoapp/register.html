@@ -1,0 +1,2 @@
+{% extends "djangoapp/base.html" %}{% block title %}Register - Car Dealership{% endblock %}{% block content %}
+<h1>Create an Account</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button type="submit">Register</button></form><p>Already have an account? <a href="/login/">Login</a></p>{% endblock %}

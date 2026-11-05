@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Car Dealership{% endblock %}</title>
+<style>body{font-family:Arial,sans-serif;margin:0;color:#222}nav{background:#0b2a4a;color:#fff;padding:12px 20px}nav a{color:#fff;margin-right:16px;text-decoration:none}nav a:hover{text-decoration:underline}main{max-width:900px;margin:24px auto;padding:0 16px}.card{border:1px solid #ddd;border-radius:8px;padding:16px;margin:12px 0}button{background:#0b2a4a;color:#fff;border:0;padding:8px 16px;border-radius:4px;cursor:pointer}input,textarea,select{display:block;width:100%;max-width:420px;margin:6px 0 12px;padding:8px;border:1px solid #ccc;border-radius:4px}footer{color:#666;text-align:center;padding:24px}</style>
+</head><body><nav><a href="/">Home</a><a href="/dealers/">Dealers</a><a href="/about/">About Us</a><a href="/contact/">Contact Us</a>{% if user.is_authenticated %}<span>Hi, {{ user.username }}!</span> <a href="/logout/">Logout</a>{% else %}<a href="/login/">Login</a><a href="/register/">Register</a>{% endif %}</nav>
+<main>{% block content %}{% endblock %}</main><footer>Car Dealership Portal &mdash; IBM Full Stack Capstone (Course 12), local build</footer></body></html>
