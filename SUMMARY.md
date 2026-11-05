@@ -6,6 +6,15 @@ Course 12 — Full Stack Application Development Capstone Project
 Location: `~/workspace/course12-capstone/`
 Status: **Built and verified locally. NOT submitted to Coursera / Mark.
 NOT published to GitHub. No scores or URLs invented.**
+**Integration update 2026-11-06:** the React front end and the Node.js
+dealers/reviews services (previously in the separate folders
+`~/workspace/course12-capstone-react/` and
+`~/workspace/course12-capstone-services/`) are now integrated into this
+repo as `frontend/` and `services/`, with the missing pieces built:
+React registration page, auth-aware React nav, `post_review`, by-id /
+by-state fetch helpers, `/fetchDealers` endpoints, and proxy wiring in
+the Django views. Full verification in "Integration update (2026-11-06)"
+below and in `RETAKE-ANSWERS.md` (the Modules 2–4 retake sheet).
 
 Built: 2026-11-06. Stack: Python 3.12, Django 4.2.16, SQLite, `requests` 2.31.0.
 Virtualenv: `~/workspace/course12-capstone/.venv/` (not part of the submission).
@@ -49,25 +58,33 @@ Coverage below is of the hands-on lab work behind each checklist only.
 | Module | Checklist | Local status |
 |---|---|---|
 | 1 — Application: Static Pages | Static Pages (5 Q) | **Done.** About Us + Contact Us pages render HTTP 200; contact form POST saves and shows thank-you (covered by test). |
-| 2 — User Management and CI/CD | User Management & CI/CD (8 Q) | **Partly done.** Register/login/logout + login-gated add-review work locally and are tested. CI is NOT run: `.github/workflows/ci.yml` exists as a file only; no GitHub repo, no Actions run. |
-| 3 — Back End Services | Back End (12 Q) | **Done locally.** CarMake/CarModel models built, migrations applied, proxy services in `restapis.py`, dealer/review/inventory JSON APIs all return HTTP 200 with real seeded data. The external Node/Mongo back-end service itself was not built or connected (proxy falls back to local DB). |
-| 4 — Dynamic Pages | Dynamic Pages (6 Q) | **Done in Django, not in React.** Dealer list, dealer detail + reviews, and add-review pages are dynamic server-rendered pages and are tested. The original lab builds these pages in React; no React front end was built in this local-only Django task. |
-| 5 — Containerize & Deploy to Kubernetes | Containerize (7 Q) | **Not done beyond a file.** `Dockerfile` exists. Docker is not installed in this VM, so no image was built, and nothing was deployed to Kubernetes or IBM Code Engine. |
+| 2 — User Management and CI/CD | User Management & CI/CD (8 Q) | **Done (locally, 2026-11-06 integration).** Register/login/logout + login-gated add-review work and are tested. Superuser `admin` exists in the local DB. React nav now shows Login/Register vs username/Logout via `GET /api/me/`; React registration page added (`frontend/src/components/Register.jsx`, verified end to end). CI is NOT run: `.github/workflows/ci.yml` exists as a file only; no GitHub repo push, no Actions run. |
+| 3 — Back End Services | Back End (12 Q) | **Done locally (2026-11-06 integration).** CarMake/CarModel models built, migrations applied, proxy services in `restapis.py` (now incl. `post_review`, `get_dealer_by_id_from_cf`, `get_dealers_by_state_from_cf`), dealer/review/inventory JSON APIs all return HTTP 200 with real seeded data. The external Node back-end service is now built (`services/`, Express, in-memory demo data, no MongoDB) and the Django views actually render its data when `DEALERS_API_URL`/`REVIEWS_API_URL` are set (verified live). New: `POST /api/dealers/<id>/reviews/` (JSON, 201, forwards via `post_review`). |
+| 4 — Dynamic Pages | Dynamic Pages (6 Q) | **Done in Django AND React (2026-11-06 integration).** Dealer list, dealer detail + reviews, and add-review pages exist as server-rendered Django pages AND as React components in `frontend/` (DealerList, DealerDetail, ReviewForm, Register). React build passes; preview serves live data through the proxy. |
+| 5 — Containerize & Deploy to Kubernetes | Containerize (7 Q) | **Not done beyond a file.** `Dockerfile` exists. Docker is not installed in this VM (`docker`/`podman`/`nerdctl` all absent, checked 2026-11-06), so no image was built, and nothing was deployed to Kubernetes or IBM Code Engine. |
 | 6 — Share Your Project | Peer Review: Submit Your Work & Grade Your Peers (1 Q) | **Not done.** Requires a public GitHub repo + Mark submission + peer grading. None of that was done (see "What Mark needs next"). |
-| 7 — Enhancement of Car Dealership Portal (optional) | Optional enhancement labs | **Partly done.** Car-inventory back-end service exists (`/api/inventory/`, 9 models). The optional React front-end enhancement was not built. |
+| 7 — Enhancement of Car Dealership Portal (optional) | Optional enhancement labs | **Partly done.** Car-inventory back-end service exists (`/api/inventory/`, 9 models). The React front-end enhancement is now built (`frontend/`). No optional lab was claimed or submitted. |
 
 ## File list
 
 ```
 ~/workspace/course12-capstone/
-├── README.md                              # run / test / API docs
+├── README.md                              # run / test / API docs (updated 2026-11-06)
 ├── SUMMARY.md                             # this file
+├── RETAKE-ANSWERS.md                      # Coursera Modules 2–4 retake sheet (2026-11-06)
 ├── requirements.txt                       # Django==4.2.16, requests==2.31.0
 ├── manage.py
 ├── Dockerfile                             # file only — never built (no Docker in VM)
-├── .github/workflows/ci.yml               # file only — never run (no GitHub repo)
+├── .github/workflows/ci.yml               # file only — never run (no GitHub repo push)
 ├── .gitignore
 ├── db.sqlite3                             # local dev DB, seeded (3 dealers / 3 makes / 9 models / 3 reviews)
+├── frontend/                              # React front end (integrated 2026-11-06)
+│   ├── package.json / vite.config.js / index.html
+│   └── src/ (App.jsx, api.js, components: DealerList, DealerDetail, ReviewForm, Register)
+├── services/                              # Node dealers (:3001) + reviews (:3002) (integrated 2026-11-06)
+│   ├── dealers-service/ (server.js, data.js)   # incl. /fetchDealers, /fetchDealer/:id, /fetchDealers/:state
+│   ├── reviews-service/ (server.js, data.js)   # incl. POST /reviews
+│   └── start-all.sh / stop-all.sh / test.sh
 ├── djangoproj/
 │   ├── settings.py                        # SQLite, djangoapp installed, DEALERS/REVIEWS_API_URL env hooks
 │   ├── urls.py                            # admin + djangoapp urls
@@ -167,12 +184,70 @@ needs to:
    deployment (Modules 4, 5, 7 as originally specified), or confirm
    with the course requirements that this Django-only build is
    acceptable as the submitted project.
+   **Update 2026-11-06:** the React front end and the Node back-end
+   services are now built and integrated (`frontend/`, `services/`) —
+   only the Docker/Kubernetes deployment (Module 5) is still missing,
+   because Docker is not installed on this VM. See "Integration update
+   (2026-11-06)" below and `RETAKE-ANSWERS.md` for the retake sheet.
+
+## Integration update (2026-11-06) — missing pieces built, retakes prepared
+
+Context: Coursera Modules 1–4 were submitted Nov 5, 2:01–2:04 PM PST.
+M1 PASSED 80%; M2 FAILED 50% (3/6), M3 FAILED 66.66% (8/12), M4 FAILED
+33.33% (2/6). Each failed module has 2 attempts left, retry every 8
+hours (earliest ≈ 10:04 PM PST Nov 5 / ≈ 12:04 PM Dhaka Nov 6).
+**No checklist was submitted in this task — only prepared.** The full
+per-question retake sheet is `RETAKE-ANSWERS.md`.
+
+What was added (files listed in the tree above; originals in
+`~/workspace/course12-capstone-react/` and
+`~/workspace/course12-capstone-services/` left untouched):
+- `frontend/src/components/Register.jsx` (new) + auth-aware nav and a
+  `register` route in `src/App.jsx`; `getMe()` / `postReviewJson()` /
+  `registerUser()` in `src/api.js`; `/register` + `/logout` in the Vite proxy.
+- `services/dealers-service/server.js`: `/fetchDealers`,
+  `/fetchDealer/:id`, `/fetchDealers/:state`, `?state=` on `/dealers`.
+- `djangoapp/restapis.py`: `post_review()`, `get_dealer_by_id_from_cf()`,
+  `get_dealers_by_state_from_cf()`, `get_dealer_by_id()`, `get_dealers_by_state()`.
+- `djangoapp/views.py`: `dealers_list` / `dealer_detail` now render proxied
+  data when configured; `add_review` forwards via `post_review`; new
+  `api_me` and JSON `POST /api/dealers/<id>/reviews/` (201).
+- `djangoapp/urls.py`: `api/me/`. `djangoapp/tests.py`: 4 new tests (10 total).
+
+Verification (all run 2026-11-06, real output, no fabrication):
+- `manage.py check` — no issues. `manage.py test` — **Ran 10 tests in 3.213s — OK.**
+- `services/test.sh` — all endpoints 200 (3 dealers, 9 models, 3 makes,
+  3 reviews, `POST /reviews` 201). New aliases curled separately:
+  `/fetchDealers` 200, `/fetchDealer/1` 200, `/fetchDealers/ON` 200,
+  `/dealers?state=ON` 200, `/fetchDealer/99` 404.
+- Full-stack E2E (services :3001/:3002 + Django :8000 with
+  `DEALERS_API_URL`/`REVIEWS_API_URL` set): `/dealers/` and `/dealer/1/`
+  rendered the proxied dealer; admin login 302; `/api/me/` anon `false`,
+  logged-in `admin`; JSON review POST → 201 and forwarded to the reviews
+  service (dealer 1 reviews 1→2 there and in the DB); React registration
+  flow created + logged in user `reacttester` (302, `/api/me/` confirmed).
+  Test review + test user deleted afterwards; DB back to 3 seeded reviews.
+- `frontend`: `npm run build` passed (36 modules, 1.32s, JS 155.51 kB);
+  `vite preview` :4173 served index 200, `/api/me/` and `/api/dealers/`
+  through the proxy returned live Django JSON, `/register/` 200.
+- Docker for Module 5: `docker`, `podman`, `nerdctl` all absent from this
+  VM (checked 2026-11-06) — **no image built, M5 stays honestly No**.
+- All test servers stopped afterwards; ports 3001/3002/4173/8000 free.
+
+Retake outlook (per `RETAKE-ANSWERS.md`): M2 → Yes × 6 (expected 6/6),
+M3 → Yes × 12 (expected 12/12), M4 → Yes × 6 (expected 6/6), provided
+`frontend/` + `services/` + the Django changes are pushed to the GitHub
+repo first. M5 stays No; M6 needs the Mark submission; M7 optional, not attempted.
 
 ## What is ready / still missing
 
 - **Ready:** Django app builds, migrates, passes `check` with no
-  issues, passes all 6 tests, serves every page and API endpoint above
-  over local HTTP, with seeded demo data.
-- **Still missing:** GitHub publication, Mark submission, peer review,
-  Coursera checklist quizzes, React front end, Node/Mongo back-end,
-  Docker image / Kubernetes / Code Engine deployment, live CI run.
+  issues, passes all 10 tests, serves every page and API endpoint above
+  over local HTTP, with seeded demo data. React front end builds and
+  serves live data (incl. registration page + auth nav); Node dealers +
+  reviews services pass all endpoint checks incl. `/fetchDealers`
+  aliases; Django proxy wiring and `post_review` verified end to end.
+- **Still missing:** GitHub publication of the integrated repo, Mark
+  submission, peer review, Coursera checklist retakes (M2–M4 prepared in
+  `RETAKE-ANSWERS.md`, M5 still blocked), Docker image / Kubernetes /
+  Code Engine deployment, live CI run.

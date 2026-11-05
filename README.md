@@ -1,46 +1,82 @@
 # Car Dealership Portal — IBM Full Stack Capstone (Course 12)
 
-Local-only Django build of the IBM Full Stack Software Developer capstone
-project. **Not submitted to Coursera / Mark. Not published to GitHub.**
+Full-stack build of the IBM Full Stack Software Developer capstone
+project: Django back end + React front end + Node.js dealers/reviews
+back-end services, all in this repo. **Not submitted to Coursera / Mark.
+Not published to GitHub.** (See `RETAKE-ANSWERS.md` for the checklist
+retake sheet and `SUMMARY.md` for verification evidence.)
+
+## Layout
+```
+course12-capstone/
+├── manage.py, requirements.txt, Dockerfile   # Django app (djangoproj + djangoapp)
+├── frontend/          # React front end (Vite) — dealer list/detail, add-review, REGISTER page
+├── services/          # Node.js dealers (:3001) + reviews (:3002) back-end services
+├── .github/workflows/ci.yml   # CI definition (file only — never run, see below)
+├── SUMMARY.md         # build + verification record
+└── RETAKE-ANSWERS.md  # Coursera Modules 1–4 retake answer sheet
+```
 
 ## What it is
-A Django dealership app (template/fork style: `djangoproj` + `djangoapp`):
 - Static pages: About Us (`/about/`) and Contact Us (`/contact/`, form saves a `ContactMessage`)
-- User management: register / login / logout with Django auth; adding a review requires login
+- User management: register / login / logout with Django auth; adding a review requires login.
+  Superuser exists locally (`admin`, created with `createsuperuser` — see note below).
+  The React nav shows Login/Register when logged out and username/Logout when logged in.
 - Back-end services: `CarMake` / `CarModel` Django models, dealer + review JSON APIs,
   and `djangoapp/restapis.py` proxy helpers (`get_request` / `post_request`,
-  `get_dealers_from_cf`, `get_dealer_reviews_from_cf`) that proxy an external
-  Node/Mongo dealers service when `DEALERS_API_URL` / `REVIEWS_API_URL` are set,
-  and fall back to the local SQLite database otherwise
-- Dynamic pages: dealer list (`/dealers/`), dealer detail with reviews
-  (`/dealer/<id>/`), add-review (`/dealer/<id>/add-review/`)
-- Admin: `/admin/` (create a superuser with `python manage.py createsuperuser`)
+  `get_dealers_from_cf`, `get_dealer_by_id_from_cf`, `get_dealers_by_state_from_cf`,
+  `get_dealer_reviews_from_cf`, `post_review`) that proxy the Node services in
+  `services/` when `DEALERS_API_URL` / `REVIEWS_API_URL` are set, and fall back to
+  the local SQLite database otherwise. The dealers service also exposes the
+  IBM-style `/fetchDealers`, `/fetchDealer/<id>`, `/fetchDealers/<state>` endpoints.
+- Dynamic pages (React, `frontend/`): dealer list with search, dealer detail with
+  reviews + stock, add-review form (JSON POST to `/api/dealers/<id>/reviews/`,
+  form POST fallback), and a registration page.
+- Admin: `/admin/` (superuser `admin` exists in the local dev DB only —
+  `db.sqlite3` is gitignored, so recreate it on any fresh checkout with
+  `python manage.py createsuperuser`).
 
-## Run locally
+## Run locally (full stack)
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python manage.py migrate
-.venv/bin/python manage.py seed_dealership   # demo data: 3 dealers, 3 makes, 9 models
-.venv/bin/python manage.py runserver 127.0.0.1:8000
-# open http://127.0.0.1:8000/  — About: /about/  Contact: /contact/
+.venv/bin/python manage.py seed_dealership   # demo data: 3 dealers, 3 makes, 9 models, 3 reviews
+.venv/bin/python manage.py createsuperuser  # only on a fresh checkout (admin already exists locally)
+
+# Node back-end services (dealers :3001, reviews :3002)
+cd services && ./start-all.sh && cd ..
+
+# Django, wired to the Node services (omit the env vars to use the local DB instead)
+DEALERS_API_URL=http://127.0.0.1:3001/dealers REVIEWS_API_URL=http://127.0.0.1:3002/reviews \
+  .venv/bin/python manage.py runserver 127.0.0.1:8000
+# open http://127.0.0.1:8000/
+
+# React front end (proxies /api, /dealer, /login, /logout, /register to Django :8000)
+cd frontend && npm install && npm run dev     # http://127.0.0.1:5173
+# or: npm run build && npm run preview        # http://127.0.0.1:4173
 ```
 
 ## Test
 ```bash
 .venv/bin/python manage.py check
-.venv/bin/python manage.py test
+.venv/bin/python manage.py test        # 10 tests (was 6 before the integration)
+cd services && ./test.sh               # live endpoint check for both Node services
+cd frontend && npm run build           # production build into frontend/dist/
 ```
 
 ## API endpoints
+- `GET /api/me/` — `{authenticated, username}` (drives the React nav)
 - `GET /api/dealers/` — all dealers (JSON)
 - `GET /api/dealers/<id>/` — one dealer
 - `GET /api/dealers/<id>/reviews/` — reviews for a dealer
+- `POST /api/dealers/<id>/reviews/` — submit a review as JSON (login + CSRF required, 201;
+  also forwards to the external reviews service via `restapis.post_review` when configured)
 - `GET /api/inventory/` — car models (inventory service)
 - `GET /api/cars/` — car makes
 
 ## Still NOT done (see SUMMARY.md)
-- No GitHub repo / public URLs; no Coursera/Mark submission; no peer review
-- No React front end, no Node/Mongo back-end service, no Docker/Kubernetes
-  deployment, no IBM Code Engine deployment, no live CI run — a `Dockerfile`
-  and `.github/workflows/ci.yml` are present as files only, and Docker is not
-  installed in this VM.
+- No GitHub push / public URLs; no Coursera/Mark submission; no peer review (Module 6).
+- **Module 5 is still blocked:** Docker is NOT installed on this VM
+  (`docker`, `podman`, `nerdctl` all absent), so no image was built, no CI
+  run exists, and nothing is deployed to Kubernetes / IBM Code Engine.
+  `Dockerfile` and `.github/workflows/ci.yml` are files only.
