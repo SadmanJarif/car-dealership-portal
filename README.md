@@ -2,9 +2,10 @@
 
 Full-stack build of the IBM Full Stack Software Developer capstone
 project: Django back end + React front end + Node.js dealers/reviews
-back-end services, all in this repo. **Not submitted to Coursera / Mark.
-Not published to GitHub.** (See `RETAKE-ANSWERS.md` for the checklist
-retake sheet and `SUMMARY.md` for verification evidence.)
+back-end services, all in this repo. **Not submitted to Coursera / Mark
+yet — published to GitHub at https://github.com/SadmanJarif/car-dealership-portal.**
+(See `RETAKE-ANSWERS.md` for the checklist retake sheet and `SUMMARY.md`
+for verification evidence.)
 
 ## Layout
 ```
@@ -75,7 +76,7 @@ cd frontend && npm run build           # production build into frontend/dist/
 - `GET /api/cars/` — car makes
 
 ## Still NOT done (see SUMMARY.md)
-- No GitHub push / public URLs; no Coursera/Mark submission; no peer review (Module 6).
+- Published to GitHub (https://github.com/SadmanJarif/car-dealership-portal); no Coursera/Mark submission yet; no peer review (Module 6).
 - **Module 5 is still blocked:** Docker is NOT installed on this VM
   (`docker`, `podman`, `nerdctl` all absent), so no image was built, no CI
   run exists, and nothing is deployed to Kubernetes / IBM Code Engine.

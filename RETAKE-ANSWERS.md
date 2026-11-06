@@ -1,10 +1,10 @@
 # Course 12 Capstone — Coursera Checklist Retake Answer Sheet
 
 **Status: PREPARED ONLY. Nothing in this file has been submitted to
-Coursera or Mark, and nothing has been pushed to GitHub.**
-Repo: https://github.com/SadmanJarif/car-dealership-portal (33 files
-uploaded Nov 5 — the integrated `frontend/` and `services/` folders in
-`~/workspace/course12-capstone/` are NOT in that repo yet; push them first).
+Coursera or Mark.**
+Repo: https://github.com/SadmanJarif/car-dealership-portal — public, 18 commits,
+verified live 2026-11-06: the integrated `frontend/` and `services/` folders
+are in the repo. No push needed before the retakes.
 
 **First submission:** Modules 1–4 submitted Nov 5, 2:01–2:04 PM PST.
 **Retakes:** each failed module shows "2 attempts remaining", retry every
