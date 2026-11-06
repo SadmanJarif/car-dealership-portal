@@ -1,0 +1,33 @@
+name: Lint Code
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+jobs:
+  lint_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - name: Install flake8
+        run: pip install flake8
+      - name: Lint Python code
+        run: flake8 .
+  lint_js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install jshint
+        run: npm install jshint
+      - name: Lint JavaScript code
+        run: ./node_modules/.bin/jshint services/dealers-service/server.js services/dealers-service/data.js services/reviews-service/server.js services/reviews-service/data.js frontend/src/api.js frontend/vite.config.js
