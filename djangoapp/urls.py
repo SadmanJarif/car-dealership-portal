@@ -16,4 +16,5 @@ urlpatterns = [
     path("api/dealers/<int:dealer_id>/reviews/", views.api_dealer_reviews, name="api_dealer_reviews"),
     path("api/inventory/", views.api_inventory, name="api_inventory"),
     path("api/cars/", views.api_cars, name="api_cars"),
+    path("djangoapp/get_cars", views.get_cars, name="get_cars"),
 ]
