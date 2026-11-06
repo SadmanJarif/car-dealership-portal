@@ -1,25 +1,51 @@
-# analyzereview — sentiment analysis of a submitted review: POST a review, the app analyses it and stores sentiment='positive'
-# Captured: 2026-11-06 06:44 UTC
-# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+# analyzereview — sentiment analysis of a submitted review: POST the exact review text 'Fantastic services' (curl) and the app analyses its sentiment
+# Captured: 2026-11-06 07:06 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-How sentiment is analysed in this build: djangoapp/views.py assigns sentiment by a
-keyword rule — review text containing 'great' or 'excellent' -> 'positive', otherwise
-'neutral'. No Watson NLU service is wired into this local build.
+$ # How sentiment is analysed in this build (djangoapp/views.py: analyze_sentiment):
+keyword rule — review text containing great/excellent/fantastic/wonderful/amazing/awesome/superb/outstanding/love/best/perfect/brilliant/happy/pleased/recommend -> 'positive'; terrible/awful/horrible/worst/bad/poor/disappointing/rude/slow/broken -> 'negative'; otherwise 'neutral'. No Watson NLU service is wired into this local build.
 
-$ POST http://127.0.0.1:8000/api/dealers/1/reviews/
-HTTP 201
-{"id": 6, "dealer_id": 1, "name": "Evidence Tester", "sentiment": "positive", "review": "Great service and an excellent experience overall. Highly recommended!"}
-Review now stored (GET /api/dealers/1/reviews/ — last entry):
-{
-  "name": "Evidence Tester",
-  "purchase": true,
-  "purchase_date": "2024-05-01",
-  "car_make": "Toyota",
-  "car_model": "Camry",
-  "car_year": 2024,
-  "sentiment": "positive",
-  "review": "Great service and an excellent experience overall. Highly recommended!"
-}
+$ curl -s -i -b /tmp/course12-evidence-cookies.txt -X POST -H Content-Type: application/json -H X-CSRFToken: VcSRQSXhTWWQH7Wq8MkMm3ZW7jAAloiWn7rdBmT4nkCUYeRXR6kFZVXqCpnPQK0c -d {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "review": "Fantastic services"} http://127.0.0.1:8000/api/dealers/1/reviews/
+HTTP/1.1 201 Created
+Date: Fri, 06 Nov 2026 07:06:30 GMT
+Server: WSGIServer/0.2 CPython/3.12.3
+Content-Type: application/json
+X-Frame-Options: DENY
+Content-Length: 99
+Vary: Cookie
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
 
-Dealer page shows it (GET /dealer/1/):
-HTTP 200 | 'Evidence Tester' on page: True | 'Sentiment: positive' on page: True
+{"id": 51, "dealer_id": 1, "name": "Maya", "sentiment": "positive", "review": "Fantastic services"}
+
+$ curl -s http://127.0.0.1:8000/api/dealers/1/reviews/
+[{"name": "Alex", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Great service and a fair price. Excellent experience overall."}, {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Fantastic services"}]
+
+$ # check: the 'Fantastic services' review as stored:
+[
+  {
+    "name": "Maya",
+    "purchase": true,
+    "purchase_date": "2024-05-01",
+    "car_make": "Toyota",
+    "car_model": "Camry",
+    "car_year": 2024,
+    "sentiment": "positive",
+    "review": "Fantastic services"
+  }
+]
+
+$ curl -s http://127.0.0.1:8000/dealer/1/
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Best Cars Dealership - Car Dealership</title>
+<style>body{font-family:Arial,sans-serif;margin:0;color:#222}nav{background:#0b2a4a;color:#fff;padding:12px 20px}nav a{color:#fff;margin-right:16px;text-decoration:none}nav a:hover{text-decoration:underline}main{max-width:900px;margin:24px auto;padding:0 16px}.card{border:1px solid #ddd;border-radius:8px;padding:16px;margin:12px 0}button{background:#0b2a4a;color:#fff;border:0;padding:8px 16px;border-radius:4px;cursor:pointer}input,textarea,select{display:block;width:100%;max-width:420px;margin:6px 0 12px;padding:8px;border:1px solid #ccc;border-radius:4px}footer{color:#666;text-align:center;padding:24px}</style>
+</head><body><nav><a href="/">Home</a><a href="/dealers/">Dealers</a><a href="/about/">About Us</a><a href="/contact/">Contact Us</a><a href="/login/">Login</a><a href="/register/">Register</a></nav>
+<main>
+<h1>Best Cars Dealership</h1><p>123 Main St, Toronto, ON M1A 1A1</p>
+<p><a href="/dealer/1/add-review/">Write a review</a> (login required)</p>
+<h2>Reviews</h2><div class="card"><p><strong>Maya</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Fantastic services</p></div><div class="card"><p><strong>Alex</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Great service and a fair price. Excellent experience overall.</p></div></main><footer>Car Dealership Portal &mdash; IBM Full Stack Capstone (Course 12), local build</footer></body></html>
+
+$ # check: dealer page shows it:
+'Fantastic services' on dealer page: True | 'Sentiment: positive' on page: True
