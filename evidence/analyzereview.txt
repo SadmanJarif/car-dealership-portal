@@ -1,13 +1,16 @@
-# analyzereview — sentiment analysis of a submitted review: POST the exact review text 'Fantastic services' (curl) and the app analyses its sentiment
-# Captured: 2026-11-06 07:06 UTC
+# analyzereview — sentiment analysis of a submitted review: GET /djangoapp/analyze_review/?review=Fantastic services, then POST the exact review text 'Fantastic services' (curl) and the app analyses its sentiment
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
 $ # How sentiment is analysed in this build (djangoapp/views.py: analyze_sentiment):
 keyword rule — review text containing great/excellent/fantastic/wonderful/amazing/awesome/superb/outstanding/love/best/perfect/brilliant/happy/pleased/recommend -> 'positive'; terrible/awful/horrible/worst/bad/poor/disappointing/rude/slow/broken -> 'negative'; otherwise 'neutral'. No Watson NLU service is wired into this local build.
 
-$ curl -s -i -b /tmp/course12-evidence-cookies.txt -X POST -H Content-Type: application/json -H X-CSRFToken: VcSRQSXhTWWQH7Wq8MkMm3ZW7jAAloiWn7rdBmT4nkCUYeRXR6kFZVXqCpnPQK0c -d {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "review": "Fantastic services"} http://127.0.0.1:8000/api/dealers/1/reviews/
+$ curl -s http://127.0.0.1:8000/djangoapp/analyze_review/?review=Fantastic%20services
+{"review": "Fantastic services", "sentiment": "positive"}
+
+$ curl -s -i -b /tmp/course12-evidence-cookies.txt -X POST -H Content-Type: application/json -H X-CSRFToken: d0NqYsXwFCOhCrLmLtsjqN0oNH9jGTQ9qe3ddgUcD4w5mc9kJDYN46Kl9AA0VOtu -d {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "review": "Fantastic services"} http://127.0.0.1:8000/api/dealers/1/reviews/
 HTTP/1.1 201 Created
-Date: Fri, 06 Nov 2026 07:06:30 GMT
+Date: Fri, 06 Nov 2026 07:38:29 GMT
 Server: WSGIServer/0.2 CPython/3.12.3
 Content-Type: application/json
 X-Frame-Options: DENY
@@ -17,13 +20,33 @@ X-Content-Type-Options: nosniff
 Referrer-Policy: same-origin
 Cross-Origin-Opener-Policy: same-origin
 
-{"id": 51, "dealer_id": 1, "name": "Maya", "sentiment": "positive", "review": "Fantastic services"}
+{"id": 53, "dealer_id": 1, "name": "Maya", "sentiment": "positive", "review": "Fantastic services"}
 
-$ curl -s http://127.0.0.1:8000/api/dealers/1/reviews/
-[{"name": "Alex", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Great service and a fair price. Excellent experience overall."}, {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Fantastic services"}]
+$ curl -s http://127.0.0.1:8000/djangoapp/get_dealer_reviews/1/
+[{"name": "Alex", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Great service and a fair price. Excellent experience overall."}, {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Fantastic services"}, {"name": "Playwright Tester", "purchase": false, "purchase_date": null, "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Fantastic services"}, {"name": "Maya", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Fantastic services"}]
 
 $ # check: the 'Fantastic services' review as stored:
 [
+  {
+    "name": "Maya",
+    "purchase": true,
+    "purchase_date": "2024-05-01",
+    "car_make": "Toyota",
+    "car_model": "Camry",
+    "car_year": 2024,
+    "sentiment": "positive",
+    "review": "Fantastic services"
+  },
+  {
+    "name": "Playwright Tester",
+    "purchase": false,
+    "purchase_date": null,
+    "car_make": "Toyota",
+    "car_model": "Camry",
+    "car_year": 2024,
+    "sentiment": "positive",
+    "review": "Fantastic services"
+  },
   {
     "name": "Maya",
     "purchase": true,
@@ -45,7 +68,7 @@ $ curl -s http://127.0.0.1:8000/dealer/1/
 <main>
 <h1>Best Cars Dealership</h1><p>123 Main St, Toronto, ON M1A 1A1</p>
 <p><a href="/dealer/1/add-review/">Write a review</a> (login required)</p>
-<h2>Reviews</h2><div class="card"><p><strong>Maya</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Fantastic services</p></div><div class="card"><p><strong>Alex</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Great service and a fair price. Excellent experience overall.</p></div></main><footer>Car Dealership Portal &mdash; IBM Full Stack Capstone (Course 12), local build</footer></body></html>
+<h2>Reviews</h2><div class="card"><p><strong>Maya</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Fantastic services</p></div><div class="card"><p><strong>Playwright Tester</strong> — Toyota Camry (2024) </p><p>Sentiment: positive 😊👍</p><p>Fantastic services</p></div><div class="card"><p><strong>Maya</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Fantastic services</p></div><div class="card"><p><strong>Alex</strong> — Toyota Camry (2024) · Purchased May 1, 2024</p><p>Sentiment: positive 😊👍</p><p>Great service and a fair price. Excellent experience overall.</p></div></main><footer>Car Dealership Portal &mdash; IBM Full Stack Capstone (Course 12), local build</footer></body></html>
 
 $ # check: dealer page shows it:
 'Fantastic services' on dealer page: True | 'Sentiment: positive' on page: True

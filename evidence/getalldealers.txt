@@ -1,5 +1,5 @@
-# getalldealers — ALL dealers (50): Node curl GET /fetchDealers and Django curl GET /api/dealers/
-# Captured: 2026-11-06 07:06 UTC
+# getalldealers — ALL dealers (50, complete JSON): Node curl GET /fetchDealers and Django curl GET /api/dealers/
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
 $ curl -s http://127.0.0.1:3001/fetchDealers

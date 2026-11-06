@@ -1,10 +1,24 @@
-# django_server — Django development server running, home page via curl
-# Captured: 2026-11-06 07:06 UTC
+# django_server — Django development server running (runserver terminal output + home page via curl)
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
+
+$ # Django runserver terminal output (evidence/django_runserver.log, verbatim):
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 06, 2026 - 07:38:03
+Django version 4.2.16, using settings 'djangoproj.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+[06/Nov/2026 07:38:06] "GET / HTTP/1.1" 200 7077
+[06/Nov/2026 07:38:06] "GET /about/ HTTP/1.1" 200 4137
+[06/Nov/2026 07:38:13] "GET /about/ HTTP/1.1" 200 4137
+[06/Nov/2026 07:38:13] "GET /contact/ HTTP/1.1" 200 2318
 
 $ curl -s -i http://127.0.0.1:8000/
 HTTP/1.1 200 OK
-Date: Fri, 06 Nov 2026 07:06:29 GMT
+Date: Fri, 06 Nov 2026 07:38:28 GMT
 Server: WSGIServer/0.2 CPython/3.12.3
 Content-Type: text/html; charset=utf-8
 X-Frame-Options: DENY
@@ -22,13 +36,3 @@ Cross-Origin-Opener-Policy: same-origin
 <main>
 <h1>Welcome to the Car Dealership Portal</h1><p>Browse dealers, read reviews, and find your next car. One place to practise buying — with real dealer listings and reviews.</p>
 <h2>Our Dealers</h2><div class="card"><h3><a href="/dealer/1/">Best Cars Dealership</a></h3><p>Toronto, ON — 123 Main St</p></div><div class="card"><h3><a href="/dealer/2/">City Auto Mall</a></h3><p>Vancouver, BC — 456 Oak Ave</p></div><div class="card"><h3><a href="/dealer/3/">Sunshine Motors</a></h3><p>Austin, TX — 789 Elm Rd</p></div><div class="card"><h3><a href="/dealer/4/">Sunflower Auto Plaza</a></h3><p>Wichita, KS — 100 E Douglas Ave</p></div><div class="card"><h3><a href="/dealer/5/">Prairie State Motors</a></h3><p>Kansas City, KS — 200 Minnesota Ave</p></div><div class="card"><h3><a href="/dealer/6/">Capital City Cars</a></h3><p>Topeka, KS — 300 SW 10th Ave</p></div><div class="card"><h3><a href="/dealer/7/">Overland Park Auto Mall</a></h3><p>Overland Park, KS — 400 W 95th St</p></div><div class="card"><h3><a href="/dealer/8/">Jayhawk Auto Center</a></h3><p>Lawrence, KS — 500 Massachusetts St</p></div><div class="card"><h3><a href="/dealer/9/">Golden State Motors</a></h3><p>Los Angeles, CA — 600 S Grand Ave</p></div><div class="card"><h3><a href="/dealer/10/">Bay Area Auto Hub</a></h3><p>San Francisco, CA — 700 Market St</p></div><div class="card"><h3><a href="/dealer/11/">Silicon Valley Cars</a></h3><p>San Jose, CA — 800 W Santa Clara St</p></div><div class="card"><h3><a href="/dealer/12/">Palm City Motors</a></h3><p>San Diego, CA — 900 Broadway</p></div><div class="card"><h3><a href="/dealer/13/">Lone Star Auto</a></h3><p>Houston, TX — 1000 Main St</p></div><div class="card"><h3><a href="/dealer/14/">Alamo 
-
-$ # runserver log (evidence/django_runserver.log, last lines):
-[06/Nov/2026 07:05:58] "GET /login/ HTTP/1.1" 200 1758
-[06/Nov/2026 07:05:58] "POST /login/ HTTP/1.1" 302 0
-[06/Nov/2026 07:05:58] "GET /dealer/1/add-review/ HTTP/1.1" 302 0
-[06/Nov/2026 07:05:58] "GET /dealer/1/add-review/ HTTP/1.1" 302 0
-Forbidden (CSRF cookie not set.): /api/dealers/1/reviews/
-[06/Nov/2026 07:05:59] "POST /api/dealers/1/reviews/ HTTP/1.1" 403 2870
-[06/Nov/2026 07:05:59] "GET /api/dealers/1/reviews/ HTTP/1.1" 200 229
-[06/Nov/2026 07:05:59] "GET /dealer/1/ HTTP/1.1" 200 1490

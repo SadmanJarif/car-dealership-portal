@@ -1,10 +1,10 @@
-# logoutuser — log out (curl GET /logout/) and see the anonymous home page again
-# Captured: 2026-11-06 07:06 UTC
+# logoutuser — log out (curl GET /djangoapp/logout) and see the anonymous home page again
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-$ curl -s -i -b /tmp/course12-evidence-cookies.txt http://127.0.0.1:8000/logout/
+$ curl -s -i -b /tmp/course12-evidence-cookies.txt http://127.0.0.1:8000/djangoapp/logout
 HTTP/1.1 302 Found
-Date: Fri, 06 Nov 2026 07:06:29 GMT
+Date: Fri, 06 Nov 2026 07:38:28 GMT
 Server: WSGIServer/0.2 CPython/3.12.3
 Content-Type: text/html; charset=utf-8
 Location: /

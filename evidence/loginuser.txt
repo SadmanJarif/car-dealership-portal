@@ -1,10 +1,10 @@
-# loginuser — log in as admin (curl POST /login/) and see 'Hi, admin!' on the home page
-# Captured: 2026-11-06 07:06 UTC
+# loginuser — log in as admin (curl POST /djangoapp/login) and see 'Hi, admin!' on the home page
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-$ curl -s -i -c /tmp/course12-evidence-cookies.txt -b /tmp/course12-evidence-cookies.txt -X POST -d username=admin&password=Admin12345&csrfmiddlewaretoken=pErze2rwPn7SH2BzK3WU9PbRNZSEnDZZBMFrCD2mwK8ATOjE1uRM9Itl6WllcLGP http://127.0.0.1:8000/login/
+$ curl -s -i -c /tmp/course12-evidence-cookies.txt -b /tmp/course12-evidence-cookies.txt -X POST -d username=admin&password=Admin12345&csrfmiddlewaretoken=2cycA88ElOtOxxKt5Rqvan7qmT2icGsgu77ylC4rPc9SOEF0ObqoNf5URZPxH2aw http://127.0.0.1:8000/djangoapp/login
 HTTP/1.1 302 Found
-Date: Fri, 06 Nov 2026 07:06:29 GMT
+Date: Fri, 06 Nov 2026 07:38:28 GMT
 Server: WSGIServer/0.2 CPython/3.12.3
 Content-Type: text/html; charset=utf-8
 Location: /
@@ -14,8 +14,8 @@ Content-Length: 0
 X-Content-Type-Options: nosniff
 Referrer-Policy: same-origin
 Cross-Origin-Opener-Policy: same-origin
-Set-Cookie:  csrftoken=2gX2yVUSNu8oflRALeLuyYHS1rSOn5zz; expires=Fri, 05 Nov 2027 07:06:29 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-Set-Cookie:  sessionid=168xsc8178vlwplcaf1q3g5onxupxb57; expires=Fri, 20 Nov 2026 07:06:29 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+Set-Cookie:  csrftoken=4OWPWLZImAOXUSJGxaPFCwO96k0iWf4N; expires=Fri, 05 Nov 2027 07:38:28 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+Set-Cookie:  sessionid=e17ws5tuuc480e656kbb001ectbgbq2f; expires=Fri, 20 Nov 2026 07:38:28 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
 
 $ curl -s -b /tmp/course12-evidence-cookies.txt http://127.0.0.1:8000/
 <!DOCTYPE html>

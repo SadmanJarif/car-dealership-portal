@@ -1,5 +1,5 @@
-# getallcarmakes — all car makes: Node curl GET /makes, Django curl GET /api/cars/ and curl GET /djangoapp/get_cars
-# Captured: 2026-11-06 07:06 UTC
+# getallcarmakes — all car makes (complete JSON): Node curl GET /makes, Django curl GET /api/cars/ and curl GET /djangoapp/get_cars
+# Captured: 2026-11-06 07:38 UTC
 # Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
 $ curl -s http://127.0.0.1:3001/makes
