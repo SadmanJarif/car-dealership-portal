@@ -13,7 +13,7 @@ course12-capstone/
 ├── manage.py, requirements.txt, Dockerfile   # Django app (djangoproj + djangoapp)
 ├── frontend/          # React front end (Vite) — dealer list/detail, add-review, REGISTER page
 ├── services/          # Node.js dealers (:3001) + reviews (:3002) back-end services
-├── .github/workflows/ci.yml   # CI definition (file only — never run, see below)
+├── .github/workflows/ci.yml   # CI definition — GitHub Actions run #17 succeeded (2026-11-06)
 ├── SUMMARY.md         # build + verification record
 └── RETAKE-ANSWERS.md  # Coursera Modules 1–4 retake answer sheet
 ```
@@ -78,6 +78,7 @@ cd frontend && npm run build           # production build into frontend/dist/
 ## Still NOT done (see SUMMARY.md)
 - Published to GitHub (https://github.com/SadmanJarif/car-dealership-portal); no Coursera/Mark submission yet; no peer review (Module 6).
 - **Module 5 is still blocked:** Docker is NOT installed on this VM
-  (`docker`, `podman`, `nerdctl` all absent), so no image was built, no CI
-  run exists, and nothing is deployed to Kubernetes / IBM Code Engine.
-  `Dockerfile` and `.github/workflows/ci.yml` are files only.
+  (`docker`, `podman`, `nerdctl` all absent), so no image was built and
+  nothing is deployed to Kubernetes / IBM Code Engine. CI itself HAS run:
+  GitHub Actions run #17 succeeded (2026-11-06) — the `Dockerfile` is
+  still a file only, with no image built from it on this VM.

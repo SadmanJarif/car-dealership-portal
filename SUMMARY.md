@@ -58,7 +58,7 @@ Coverage below is of the hands-on lab work behind each checklist only.
 | Module | Checklist | Local status |
 |---|---|---|
 | 1 — Application: Static Pages | Static Pages (5 Q) | **Done.** About Us + Contact Us pages render HTTP 200; contact form POST saves and shows thank-you (covered by test). |
-| 2 — User Management and CI/CD | User Management & CI/CD (8 Q) | **Done (locally, 2026-11-06 integration).** Register/login/logout + login-gated add-review work and are tested. Superuser `admin` exists in the local DB. React nav now shows Login/Register vs username/Logout via `GET /api/me/`; React registration page added (`frontend/src/components/Register.jsx`, verified end to end). CI is NOT run: `.github/workflows/ci.yml` exists as a file only; no GitHub repo push, no Actions run. |
+| 2 — User Management and CI/CD | User Management & CI/CD (8 Q) | **Done (locally, 2026-11-06 integration).** Register/login/logout + login-gated add-review work and are tested. Superuser `admin` exists in the local DB. React nav now shows Login/Register vs username/Logout via `GET /api/me/`; React registration page added (`frontend/src/components/Register.jsx`, verified end to end). CI has run: GitHub Actions run #17 succeeded (2026-11-06). |
 | 3 — Back End Services | Back End (12 Q) | **Done locally (2026-11-06 integration).** CarMake/CarModel models built, migrations applied, proxy services in `restapis.py` (now incl. `post_review`, `get_dealer_by_id_from_cf`, `get_dealers_by_state_from_cf`), dealer/review/inventory JSON APIs all return HTTP 200 with real seeded data. The external Node back-end service is now built (`services/`, Express, in-memory demo data, no MongoDB) and the Django views actually render its data when `DEALERS_API_URL`/`REVIEWS_API_URL` are set (verified live). New: `POST /api/dealers/<id>/reviews/` (JSON, 201, forwards via `post_review`). |
 | 4 — Dynamic Pages | Dynamic Pages (6 Q) | **Done in Django AND React (2026-11-06 integration).** Dealer list, dealer detail + reviews, and add-review pages exist as server-rendered Django pages AND as React components in `frontend/` (DealerList, DealerDetail, ReviewForm, Register). React build passes; preview serves live data through the proxy. |
 | 5 — Containerize & Deploy to Kubernetes | Containerize (7 Q) | **Not done beyond a file.** `Dockerfile` exists. Docker is not installed in this VM (`docker`/`podman`/`nerdctl` all absent, checked 2026-11-06), so no image was built, and nothing was deployed to Kubernetes or IBM Code Engine. |
@@ -75,7 +75,7 @@ Coverage below is of the hands-on lab work behind each checklist only.
 ├── requirements.txt                       # Django==4.2.16, requests==2.31.0
 ├── manage.py
 ├── Dockerfile                             # file only — never built (no Docker in VM)
-├── .github/workflows/ci.yml               # file only — never run (no GitHub repo push)
+├── .github/workflows/ci.yml               # CI — GitHub Actions run #17 succeeded (2026-11-06)
 ├── .gitignore
 ├── db.sqlite3                             # local dev DB, seeded (3 dealers / 3 makes / 9 models / 3 reviews)
 ├── frontend/                              # React front end (integrated 2026-11-06)
@@ -250,4 +250,4 @@ repo first. M5 stays No; M6 needs the Mark submission; M7 optional, not attempte
 - **Still missing:** GitHub publication of the integrated repo, Mark
   submission, peer review, Coursera checklist retakes (M2–M4 prepared in
   `RETAKE-ANSWERS.md`, M5 still blocked), Docker image / Kubernetes /
-  Code Engine deployment, live CI run.
+  Code Engine deployment.
