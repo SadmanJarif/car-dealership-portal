@@ -6,7 +6,7 @@ import { registerUser } from '../api.js'
 // Django site does. On success the new user is logged in by Django
 // and the app returns to the dealer list.
 export default function Register({ onDone, onGoLogin }) {
-  const [form, setForm] = useState({ username: '', email: '', password1: '', password2: '' })
+  const [form, setForm] = useState({ first_name: '', last_name: '', username: '', email: '', password1: '', password2: '' })
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -39,6 +39,12 @@ export default function Register({ onDone, onGoLogin }) {
       </p>
       {error && <div className="error">{error}</div>}
       <form onSubmit={onSubmit}>
+        <label htmlFor="reg-first-name">First Name</label>
+        <input id="reg-first-name" type="text" value={form.first_name} onChange={set('first_name')} required />
+
+        <label htmlFor="reg-last-name">Last Name</label>
+        <input id="reg-last-name" type="text" value={form.last_name} onChange={set('last_name')} required />
+
         <label htmlFor="reg-username">Username</label>
         <input id="reg-username" type="text" value={form.username} onChange={set('username')} required />
 
