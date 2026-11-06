@@ -1,46 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 import json
-from .models import CarMake, CarModel, CarDealer
+from .models import CarMake, CarModel, CarDealer, DealerReview
 from .forms import RegistrationForm, ReviewForm, ContactForm
 from . import restapis
 
-POSITIVE_WORDS = (
-    "great",
-    "excellent",
-    "fantastic",
-    "wonderful",
-    "amazing",
-    "awesome",
-    "superb",
-    "outstanding",
-    "love",
-    "loved",
-    "best",
-    "perfect",
-    "brilliant",
-    "happy",
-    "pleased",
-    "recommend",
-)
-NEGATIVE_WORDS = (
-    "terrible",
-    "awful",
-    "horrible",
-    "worst",
-    "bad",
-    "poor",
-    "disappointing",
-    "disappointed",
-    "rude",
-    "slow",
-    "broken",
-)
-
+POSITIVE_WORDS = ("great", "excellent", "fantastic", "wonderful", "amazing",
+                  "awesome", "superb", "outstanding", "love", "loved", "best",
+                  "perfect", "brilliant", "happy", "pleased", "recommend")
+NEGATIVE_WORDS = ("terrible", "awful", "horrible", "worst", "bad", "poor",
+                  "disappointing", "disappointed", "rude", "slow", "broken")
 
 def analyze_sentiment(text):
     """Keyword sentiment analysis for a review (local build; no Watson NLU
@@ -53,15 +27,12 @@ def analyze_sentiment(text):
         return "negative"
     return "neutral"
 
-
 def index(request):
     dealers = CarDealer.objects.all()
     return render(request, "djangoapp/index.html", {"dealers": dealers})
 
-
 def about(request):
     return render(request, "djangoapp/about.html")
-
 
 def contact(request):
     sent = False
@@ -75,7 +46,6 @@ def contact(request):
         form = ContactForm()
     return render(request, "djangoapp/contact.html", {"form": form, "sent": sent})
 
-
 def dealers_list(request):
     # Back-end proxy first (external Node/Mongo service when configured),
     # otherwise local database — same data either way. The proxied list is
@@ -86,13 +56,13 @@ def dealers_list(request):
     if proxied is not None:
         dealers = proxied
         if state:
-            dealers = [d for d in dealers if str(d.get("state", "")).lower() == state.lower()]
+            dealers = [d for d in dealers
+                       if str(d.get("state", "")).lower() == state.lower()]
     else:
         dealers = CarDealer.objects.all()
         if state:
             dealers = dealers.filter(state__iexact=state)
     return render(request, "djangoapp/dealers.html", {"dealers": dealers, "proxied": proxied})
-
 
 def dealer_detail(request, dealer_id):
     db_dealer = get_object_or_404(CarDealer, pk=dealer_id)
@@ -108,7 +78,6 @@ def dealer_detail(request, dealer_id):
         reviews = db_dealer.reviews.all().order_by("-created_at")
     return render(request, "djangoapp/dealer_detail.html", {"dealer": dealer, "reviews": reviews})
 
-
 @login_required
 def add_review(request, dealer_id):
     dealer = get_object_or_404(CarDealer, pk=dealer_id)
@@ -123,25 +92,21 @@ def add_review(request, dealer_id):
             # configured (restapis.post_review); the local save above is
             # the fallback and always happens, so a down service loses nothing.
             if settings.REVIEWS_API_URL:
-                restapis.post_review(
-                    settings.REVIEWS_API_URL,
-                    {
-                        "dealer_id": dealer.id,
-                        "name": review.name,
-                        "purchase": review.purchase,
-                        "purchase_date": str(review.purchase_date) if review.purchase_date else "",
-                        "car_make": review.car_make,
-                        "car_model": review.car_model,
-                        "car_year": review.car_year,
-                        "sentiment": review.sentiment,
-                        "review": review.review,
-                    },
-                )
+                restapis.post_review(settings.REVIEWS_API_URL, {
+                    "dealer_id": dealer.id,
+                    "name": review.name,
+                    "purchase": review.purchase,
+                    "purchase_date": str(review.purchase_date) if review.purchase_date else "",
+                    "car_make": review.car_make,
+                    "car_model": review.car_model,
+                    "car_year": review.car_year,
+                    "sentiment": review.sentiment,
+                    "review": review.review,
+                })
             return redirect("dealer_detail", dealer_id=dealer.id)
     else:
         form = ReviewForm(initial={"name": request.user.username})
     return render(request, "djangoapp/add_review.html", {"dealer": dealer, "form": form})
-
 
 def register_view(request):
     if request.method == "POST":
@@ -154,7 +119,6 @@ def register_view(request):
         form = RegistrationForm()
     return render(request, "djangoapp/register.html", {"form": form})
 
-
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -166,11 +130,9 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, "djangoapp/login.html", {"form": form})
 
-
 def logout_view(request):
     logout(request)
     return redirect("index")
-
 
 # ---- JSON back-end services (also used by the React/dynamic front end) ----
 def api_me(request):
@@ -178,7 +140,6 @@ def api_me(request):
     if request.user.is_authenticated:
         return JsonResponse({"authenticated": True, "username": request.user.username})
     return JsonResponse({"authenticated": False, "username": None})
-
 
 def api_dealers(request):
     # ?state=<state> filters to dealers in one state (get_dealers_by_state).
@@ -189,19 +150,11 @@ def api_dealers(request):
     dealers = list(qs.values("id", "full_name", "city", "address", "state", "zip", "lat", "long", "short_name"))
     return JsonResponse(dealers, safe=False)
 
-
 def api_dealer_detail(request, dealer_id):
     dealer = get_object_or_404(CarDealer, pk=dealer_id)
-    data = {
-        "id": dealer.id,
-        "full_name": dealer.full_name,
-        "city": dealer.city,
-        "address": dealer.address,
-        "state": dealer.state,
-        "zip": dealer.zip,
-    }
+    data = {"id": dealer.id, "full_name": dealer.full_name, "city": dealer.city,
+            "address": dealer.address, "state": dealer.state, "zip": dealer.zip}
     return JsonResponse(data)
-
 
 def api_dealer_reviews(request, dealer_id):
     dealer = get_object_or_404(CarDealer, pk=dealer_id)
@@ -228,63 +181,48 @@ def api_dealer_reviews(request, dealer_id):
         review.sentiment = analyze_sentiment(review.review)
         review.save()
         if settings.REVIEWS_API_URL:
-            restapis.post_review(
-                settings.REVIEWS_API_URL,
-                {
-                    "dealer_id": dealer.id,
-                    "name": review.name,
-                    "purchase": review.purchase,
-                    "purchase_date": str(review.purchase_date) if review.purchase_date else "",
-                    "car_make": review.car_make,
-                    "car_model": review.car_model,
-                    "car_year": review.car_year,
-                    "sentiment": review.sentiment,
-                    "review": review.review,
-                },
-            )
-        return JsonResponse(
-            {
-                "id": review.id,
+            restapis.post_review(settings.REVIEWS_API_URL, {
                 "dealer_id": dealer.id,
                 "name": review.name,
+                "purchase": review.purchase,
+                "purchase_date": str(review.purchase_date) if review.purchase_date else "",
+                "car_make": review.car_make,
+                "car_model": review.car_model,
+                "car_year": review.car_year,
                 "sentiment": review.sentiment,
                 "review": review.review,
-            },
-            status=201,
-        )
-    reviews = list(
-        dealer.reviews.values(
-            "name", "purchase", "purchase_date", "car_make", "car_model", "car_year", "sentiment", "review"
-        )
-    )
+            })
+        return JsonResponse({"id": review.id, "dealer_id": dealer.id, "name": review.name,
+                             "sentiment": review.sentiment, "review": review.review}, status=201)
+    reviews = list(dealer.reviews.values("name", "purchase", "purchase_date", "car_make", "car_model", "car_year", "sentiment", "review"))
     return JsonResponse(reviews, safe=False)
 
-
 def api_inventory(request):
-    cars = list(
-        CarModel.objects.select_related("car_make").values(
-            "id", "name", "car_type", "year", "dealer_id", "car_make__name"
-        )
-    )
+    cars = list(CarModel.objects.select_related("car_make").values("id", "name", "car_type", "year", "dealer_id", "car_make__name"))
     return JsonResponse(cars, safe=False)
-
 
 def api_cars(request):
     makes = list(CarMake.objects.values("id", "name", "description"))
     return JsonResponse(makes, safe=False)
 
+def analyze_review(request):
+    # GET sentiment analysis of a review text, e.g.
+    # /djangoapp/analyze_review/?review=Fantastic+services
+    # Returns {"review": "...", "sentiment": "positive"}.
+    # Same keyword rule as analyze_sentiment() in this local build
+    # (no Watson NLU wired in).
+    text = request.GET.get("review") or request.GET.get("text") or ""
+    return JsonResponse({"review": text, "sentiment": analyze_sentiment(text)})
 
 def get_cars(request):
     # Exact endpoint the IBM capstone rubric calls: /djangoapp/get_cars
     # Returns all car makes with their models (the full inventory).
     cars = []
     for make in CarMake.objects.all():
-        cars.append(
-            {
-                "id": make.id,
-                "name": make.name,
-                "description": make.description,
-                "models": list(make.models.values("id", "name", "car_type", "year", "dealer_id")),
-            }
-        )
+        cars.append({
+            "id": make.id,
+            "name": make.name,
+            "description": make.description,
+            "models": list(make.models.values("id", "name", "car_type", "year", "dealer_id")),
+        })
     return JsonResponse({"car_makes": cars, "count": len(cars)}, safe=False)

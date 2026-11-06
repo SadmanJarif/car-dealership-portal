@@ -17,4 +17,9 @@ urlpatterns = [
     path("api/inventory/", views.api_inventory, name="api_inventory"),
     path("api/cars/", views.api_cars, name="api_cars"),
     path("djangoapp/get_cars", views.get_cars, name="get_cars"),
+    # Course-rubric aliases under /djangoapp/ (same views as the local routes)
+    path("djangoapp/login", views.login_view, name="djangoapp_login"),
+    path("djangoapp/logout", views.logout_view, name="djangoapp_logout"),
+    path("djangoapp/get_dealer_reviews/<int:dealer_id>/", views.api_dealer_reviews, name="djangoapp_get_dealer_reviews"),
+    path("djangoapp/analyze_review/", views.analyze_review, name="djangoapp_analyze_review"),
 ]
