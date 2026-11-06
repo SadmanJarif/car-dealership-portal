@@ -1,0 +1,25 @@
+# analyzereview — sentiment analysis of a submitted review: POST a review, the app analyses it and stores sentiment='positive'
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+How sentiment is analysed in this build: djangoapp/views.py assigns sentiment by a
+keyword rule — review text containing 'great' or 'excellent' -> 'positive', otherwise
+'neutral'. No Watson NLU service is wired into this local build.
+
+$ POST http://127.0.0.1:8000/api/dealers/1/reviews/
+HTTP 201
+{"id": 6, "dealer_id": 1, "name": "Evidence Tester", "sentiment": "positive", "review": "Great service and an excellent experience overall. Highly recommended!"}
+Review now stored (GET /api/dealers/1/reviews/ — last entry):
+{
+  "name": "Evidence Tester",
+  "purchase": true,
+  "purchase_date": "2024-05-01",
+  "car_make": "Toyota",
+  "car_model": "Camry",
+  "car_year": 2024,
+  "sentiment": "positive",
+  "review": "Great service and an excellent experience overall. Highly recommended!"
+}
+
+Dealer page shows it (GET /dealer/1/):
+HTTP 200 | 'Evidence Tester' on page: True | 'Sentiment: positive' on page: True

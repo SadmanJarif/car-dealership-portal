@@ -1,0 +1,12 @@
+# loginuser — logging in as the admin superuser (local dev DB) and seeing the logged-in home page
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+$ POST http://127.0.0.1:8000/login/ username=admin
+HTTP 302  Location: /
+Session cookie set: True
+$ GET http://127.0.0.1:8000/ (after login)
+HTTP 200
+Nav shows logged-in user: True
+Home page excerpt:
+<nav><a href="/">Home</a><a href="/dealers/">Dealers</a><a href="/about/">About Us</a><a href="/contact/">Contact Us</a><span>Hi, admin!</span> <a href="/logout/">Logout</a></nav>

@@ -1,0 +1,16 @@
+# django_server — Django development server running and serving the home page
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+Runserver log (evidence/django_runserver.log):
+Watching for file changes with StatReloader
+[06/Nov/2026 06:44:10] "GET / HTTP/1.1" 200 1633
+[06/Nov/2026 06:44:18] "GET / HTTP/1.1" 200 1633
+
+$ curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/
+HTTP 200
+Home page first 600 chars:
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Car Dealership</title>
+<style>body{font-family:Arial,sans-serif;margin:0;color:#222}nav{background:#0b2a4a;color:#fff;padding:12px 20px}nav a{color:#fff;margin-right:16px;text-decoration:none}nav a:hover{text-decoration:underline}main{max-width:900px;margin:24px auto;padding:0 16px}.card{border:1px solid #ddd;border-radius:8px;padding:16px;margin:12px 0}button{background:#0b2a4a;color:#fff;border:0;padding:8px 16px;border-radius:4px;cursor:pointer}input

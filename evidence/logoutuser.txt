@@ -1,0 +1,9 @@
+# logoutuser — logging out and seeing the anonymous home page again
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+$ GET http://127.0.0.1:8000/logout/
+HTTP 302  Location: /
+$ GET http://127.0.0.1:8000/ (after logout)
+HTTP 200
+Nav shows Login link: True | still shows 'Hi, admin!': False

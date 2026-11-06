@@ -1,0 +1,11 @@
+# getalldealers — all dealers: Node service GET /fetchDealers and Django GET /api/dealers/
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+$ GET http://127.0.0.1:3001/fetchDealers
+HTTP 200
+[{"id":1,"full_name":"Best Cars Dealership","short_name":"Best Cars","city":"Toronto","address":"123 Main St","state":"ON","zip":"M1A 1A1","lat":43.65,"long":-79.38},{"id":2,"full_name":"City Auto Mall","short_name":"City Auto","city":"Vancouver","address":"456 Oak Ave","state":"BC","zip":"V6B 1A1","lat":49.28,"long":-123.12},{"id":3,"full_name":"Sunshine Motors","short_name":"Sunshine","city":"Austin","address":"789 Elm Rd","state":"TX","zip":"78701","lat":30.27,"long":-97.74}]
+
+$ GET http://127.0.0.1:8000/api/dealers/
+HTTP 200
+[{"id": 1, "full_name": "Best Cars Dealership", "city": "Toronto", "address": "123 Main St", "state": "ON", "zip": "M1A 1A1", "lat": 43.65, "long": -79.38, "short_name": "Best Cars"}, {"id": 2, "full_name": "City Auto Mall", "city": "Vancouver", "address": "456 Oak Ave", "state": "BC", "zip": "V6B 1A1", "lat": 49.28, "long": -123.12, "short_name": "City Auto"}, {"id": 3, "full_name": "Sunshine Motors", "city": "Austin", "address": "789 Elm Rd", "state": "TX", "zip": "78701", "lat": 30.27, "long": -97.74, "short_name": "Sunshine"}]

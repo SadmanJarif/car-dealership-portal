@@ -1,0 +1,11 @@
+# getallcarmakes — all car makes: Node GET /makes and Django GET /api/cars/
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+$ GET http://127.0.0.1:3001/makes
+HTTP 200
+[{"id":1,"name":"Toyota","description":"Japanese car maker"},{"id":2,"name":"Honda","description":"Japanese car maker"},{"id":3,"name":"Ford","description":"American car maker"}]
+
+$ GET http://127.0.0.1:8000/api/cars/
+HTTP 200
+[{"id": 1, "name": "Toyota", "description": "Japanese car maker"}, {"id": 2, "name": "Honda", "description": "Japanese car maker"}, {"id": 3, "name": "Ford", "description": "American car maker"}]

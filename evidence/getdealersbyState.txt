@@ -1,0 +1,11 @@
+# getdealersbyState — dealers in one state (ON): Node GET /fetchDealers/ON and GET /dealers?state=ON
+# Captured: 2026-11-06 06:44 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+
+$ GET http://127.0.0.1:3001/fetchDealers/ON
+HTTP 200
+[{"id":1,"full_name":"Best Cars Dealership","short_name":"Best Cars","city":"Toronto","address":"123 Main St","state":"ON","zip":"M1A 1A1","lat":43.65,"long":-79.38}]
+
+$ GET http://127.0.0.1:3001/dealers?state=ON
+HTTP 200
+[{"id":1,"full_name":"Best Cars Dealership","short_name":"Best Cars","city":"Toronto","address":"123 Main St","state":"ON","zip":"M1A 1A1","lat":43.65,"long":-79.38}]
