@@ -1,11 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+
 
 class CarMake(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
+
     def __str__(self):
         return self.name
+
 
 class CarModel(models.Model):
     SEDAN = "Sedan"
@@ -17,8 +19,10 @@ class CarModel(models.Model):
     dealer_id = models.IntegerField(default=1)
     car_type = models.CharField(max_length=20, choices=CAR_TYPES, default=SEDAN)
     year = models.IntegerField(default=2024)
+
     def __str__(self):
         return f"{self.car_make.name} {self.name} ({self.year})"
+
 
 class CarDealer(models.Model):
     name = models.CharField(max_length=200)
@@ -30,8 +34,10 @@ class CarDealer(models.Model):
     long = models.FloatField(default=0.0)
     short_name = models.CharField(max_length=100, default="")
     full_name = models.CharField(max_length=200, default="")
+
     def __str__(self):
         return self.full_name or self.name
+
 
 class DealerReview(models.Model):
     dealer = models.ForeignKey(CarDealer, on_delete=models.CASCADE, related_name="reviews")
@@ -44,13 +50,16 @@ class DealerReview(models.Model):
     sentiment = models.CharField(max_length=20, default="neutral")
     review = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"Review by {self.name} for {self.dealer}"
+
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"Contact from {self.name} <{self.email}>"

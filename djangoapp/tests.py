@@ -2,12 +2,19 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import CarMake, CarModel, CarDealer, DealerReview
 
+
 class DealershipTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.make = CarMake.objects.create(name="Toyota", description="Japanese car maker")
         self.model = CarModel.objects.create(car_make=self.make, name="Camry", dealer_id=1, car_type="Sedan", year=2024)
-        self.dealer = CarDealer.objects.create(full_name="Best Cars Dealership", city="Toronto", address="123 Main St", state="ON", zip="M1A 1A1", short_name="Best Cars")
+        self.dealer = CarDealer.objects.create(
+            full_name="Best Cars Dealership",
+            city="Toronto",
+            address="123 Main St",
+            state="ON",
+            zip="M1A 1A1",
+            short_name="Best Cars")
         User.objects.create_user(username="tester", password="testpass123")
 
     def test_about_page(self):
