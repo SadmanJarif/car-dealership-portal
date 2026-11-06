@@ -153,6 +153,8 @@ export async function registerUser(data) {
   const token = extractCsrfToken(await pageRes.text())
   if (!token) throw new Error('Could not find a CSRF token on the registration form page.')
   const body = new URLSearchParams({
+    first_name: data.first_name || '',
+    last_name: data.last_name || '',
     username: data.username,
     email: data.email,
     password1: data.password1,
