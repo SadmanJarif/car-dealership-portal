@@ -1,11 +1,9 @@
-# getdealerbyid — one dealer by id: Node GET /fetchDealer/1 and Django GET /api/dealers/1/
-# Captured: 2026-11-06 06:44 UTC
-# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+# getdealerbyid — dealer 1: Node curl GET /fetchDealer/1 and Django curl GET /api/dealers/1/
+# Captured: 2026-11-06 07:06 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-$ GET http://127.0.0.1:3001/fetchDealer/1
-HTTP 200
+$ curl -s http://127.0.0.1:3001/fetchDealer/1
 {"id":1,"full_name":"Best Cars Dealership","short_name":"Best Cars","city":"Toronto","address":"123 Main St","state":"ON","zip":"M1A 1A1","lat":43.65,"long":-79.38}
 
-$ GET http://127.0.0.1:8000/api/dealers/1/
-HTTP 200
+$ curl -s http://127.0.0.1:8000/api/dealers/1/
 {"id": 1, "full_name": "Best Cars Dealership", "city": "Toronto", "address": "123 Main St", "state": "ON", "zip": "M1A 1A1"}

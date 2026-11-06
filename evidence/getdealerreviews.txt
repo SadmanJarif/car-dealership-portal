@@ -1,11 +1,9 @@
-# getdealerreviews — reviews for dealer 1: Node GET /reviews?dealerId=1 and Django GET /api/dealers/1/reviews/
-# Captured: 2026-11-06 06:44 UTC
-# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+# getdealerreviews — reviews for dealer 1: Node curl GET /reviews?dealerId=1 and Django curl GET /api/dealers/1/reviews/
+# Captured: 2026-11-06 07:06 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-$ GET http://127.0.0.1:3002/reviews?dealerId=1
-HTTP 200
+$ curl -s http://127.0.0.1:3002/reviews?dealerId=1
 [{"id":1,"dealer_id":1,"name":"Alex","purchase":true,"purchase_date":"2024-05-01","car_make":"Toyota","car_model":"Camry","car_year":2024,"sentiment":"positive","review":"Great service and a fair price. Excellent experience overall."}]
 
-$ GET http://127.0.0.1:8000/api/dealers/1/reviews/
-HTTP 200
+$ curl -s http://127.0.0.1:8000/api/dealers/1/reviews/
 [{"name": "Alex", "purchase": true, "purchase_date": "2024-05-01", "car_make": "Toyota", "car_model": "Camry", "car_year": 2024, "sentiment": "positive", "review": "Great service and a fair price. Excellent experience overall."}]

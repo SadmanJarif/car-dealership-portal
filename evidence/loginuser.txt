@@ -1,12 +1,31 @@
-# loginuser — logging in as the admin superuser (local dev DB) and seeing the logged-in home page
-# Captured: 2026-11-06 06:44 UTC
-# Stack: Django :8000, dealers :3001, reviews :3002 (all local)
+# loginuser — log in as admin (curl POST /login/) and see 'Hi, admin!' on the home page
+# Captured: 2026-11-06 07:06 UTC
+# Stack: Django :8000, dealers :3001, reviews :3002 (all local, 50 dealers, 5 in Kansas)
 
-$ POST http://127.0.0.1:8000/login/ username=admin
-HTTP 302  Location: /
-Session cookie set: True
-$ GET http://127.0.0.1:8000/ (after login)
-HTTP 200
-Nav shows logged-in user: True
-Home page excerpt:
-<nav><a href="/">Home</a><a href="/dealers/">Dealers</a><a href="/about/">About Us</a><a href="/contact/">Contact Us</a><span>Hi, admin!</span> <a href="/logout/">Logout</a></nav>
+$ curl -s -i -c /tmp/course12-evidence-cookies.txt -b /tmp/course12-evidence-cookies.txt -X POST -d username=admin&password=Admin12345&csrfmiddlewaretoken=pErze2rwPn7SH2BzK3WU9PbRNZSEnDZZBMFrCD2mwK8ATOjE1uRM9Itl6WllcLGP http://127.0.0.1:8000/login/
+HTTP/1.1 302 Found
+Date: Fri, 06 Nov 2026 07:06:29 GMT
+Server: WSGIServer/0.2 CPython/3.12.3
+Content-Type: text/html; charset=utf-8
+Location: /
+X-Frame-Options: DENY
+Vary: Cookie
+Content-Length: 0
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+Set-Cookie:  csrftoken=2gX2yVUSNu8oflRALeLuyYHS1rSOn5zz; expires=Fri, 05 Nov 2027 07:06:29 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+Set-Cookie:  sessionid=168xsc8178vlwplcaf1q3g5onxupxb57; expires=Fri, 20 Nov 2026 07:06:29 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+
+$ curl -s -b /tmp/course12-evidence-cookies.txt http://127.0.0.1:8000/
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Car Dealership</title>
+<style>body{font-family:Arial,sans-serif;margin:0;color:#222}nav{background:#0b2a4a;color:#fff;padding:12px 20px}nav a{color:#fff;margin-right:16px;text-decoration:none}nav a:hover{text-decoration:underline}main{max-width:900px;margin:24px auto;padding:0 16px}.card{border:1px solid #ddd;border-radius:8px;padding:16px;margin:12px 0}button{background:#0b2a4a;color:#fff;border:0;padding:8px 16px;border-radius:4px;cursor:pointer}input,textarea,select{display:block;width:100%;max-width:420px;margin:6px 0 12px;padding:8px;border:1px solid #ccc;border-radius:4px}footer{color:#666;text-align:center;padding:24px}</style>
+</head><body><nav><a href="/">Home</a><a href="/dealers/">Dealers</a><a href="/about/">About Us</a><a href="/contact/">Contact Us</a><span>Hi, admin!</span> <a href="/logout/">Logout</a></nav>
+<main>
+<h1>Welcome to the Car Dealership Portal</h1><p>Browse dealers, read reviews, and find your next car. One place to practise buying — with real dealer listings and reviews.</p>
+<h2>Our Dealers</h2><div class="card"><h3><a href="/dealer/1/">Best Cars Dealership</a></h3><p>Toronto, ON — 123 Main St</p></div><div class="card"><h3><a href="/dealer/2/">City Auto Mall</a></h3><p>Vancouver, BC — 456 Oak Ave</p></div><div class="card"><h3><a href="/dealer/3/">Sunshine Motors</a></h3><p>Austin, TX — 789 Elm Rd</p></div><div class="card"><h3><a href="/dealer/4/">Sunflower Auto Plaza</a></h3><p>Wichita, KS — 100 E Douglas Ave</p></div><div class="card"><h3><a href="/dealer/5/">Prairie State Motors</a></h3><p>Kansas City, KS — 200 Minnesota Ave</p></div><div class="card"><h3><a href="/dealer/6/">Capital City Cars</a></h3><p>Topeka, KS — 300 SW 10th Ave</p></div><div class="card"><h3><a href="/dealer/7/">Overland Park Auto Mall</a></h3><p>Overland Park, KS — 400 W 95th St</p></div><div class="card"><h3><a href="/
+
+$ # check: nav shows logged-in user:
+'Hi, admin!' in home page: True
