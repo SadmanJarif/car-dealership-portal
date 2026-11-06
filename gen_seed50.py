@@ -3,7 +3,7 @@
 dealers service (services/dealers-service/data.js) from ONE dealer list so
 both stores always agree. Also generates services/reviews-service/data.js
 (one seeded review per dealer). Run from ~/workspace/course12-capstone."""
-import json
+
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent / "workspace" / "course12-capstone"
@@ -68,38 +68,42 @@ DEALERS = [
 assert len(DEALERS) == 50, f"expected 50 dealers, got {len(DEALERS)}"
 assert sum(1 for d in DEALERS if d[4] == "KS") == 5, "expected 5 Kansas dealers"
 
+
 def py_dict(d):
     full, short, city, addr, state, zipc, lat, lng = d
-    return (f'{{"full_name": "{full}", "short_name": "{short}", "city": "{city}", '
-            f'"address": "{addr}", "state": "{state}", "zip": "{zipc}", "lat": {lat}, "long": {lng}}}')
+    return (
+        f'{{"full_name": "{full}", "short_name": "{short}", "city": "{city}", '
+        f'"address": "{addr}", "state": "{state}", "zip": "{zipc}", "lat": {lat}, "long": {lng}}}'
+    )
+
 
 # --- Django seed ---
 lines = [
-    'from django.core.management.base import BaseCommand',
-    'from djangoapp.models import CarMake, CarModel, CarDealer, DealerReview',
-    '',
-    '',
-    'class Command(BaseCommand):',
+    "from django.core.management.base import BaseCommand",
+    "from djangoapp.models import CarMake, CarModel, CarDealer, DealerReview",
+    "",
+    "",
+    "class Command(BaseCommand):",
     '    help = "Seed demo dealers, makes, models and reviews (local demo data only): 50 dealers"',
-    '    def handle(self, *args, **options):',
+    "    def handle(self, *args, **options):",
     '        toyota, _ = CarMake.objects.get_or_create(name="Toyota", defaults={"description": "Japanese car maker"})',
     '        honda, _ = CarMake.objects.get_or_create(name="Honda", defaults={"description": "Japanese car maker"})',
     '        ford, _ = CarMake.objects.get_or_create(name="Ford", defaults={"description": "American car maker"})',
-    '        dealers = [',
+    "        dealers = [",
 ]
 for d in DEALERS:
-    lines.append(f'            {py_dict(d)},')
+    lines.append(f"            {py_dict(d)},")
 lines += [
-    '        ]',
-    '        for d in dealers:',
+    "        ]",
+    "        for d in dealers:",
     '            dealer, _ = CarDealer.objects.get_or_create(full_name=d["full_name"], defaults=d)',
-    '            CarModel.objects.get_or_create(car_make=toyota, name="Camry", dealer_id=dealer.id, defaults={"car_type": "Sedan", "year": 2024})',
-    '            CarModel.objects.get_or_create(car_make=honda, name="CR-V", dealer_id=dealer.id, defaults={"car_type": "SUV", "year": 2024})',
-    '            CarModel.objects.get_or_create(car_make=ford, name="F-150", dealer_id=dealer.id, defaults={"car_type": "SUV", "year": 2023})',
-    '            if not dealer.reviews.exists():',
-    '                DealerReview.objects.create(dealer=dealer, name="Alex", purchase=True, purchase_date="2024-05-01", car_make="Toyota", car_model="Camry", car_year=2024, sentiment="positive", review="Great service and a fair price. Excellent experience overall.")',
+    '            CarModel.objects.get_or_create(car_make=toyota, name="Camry", dealer_id=dealer.id, defaults={"car_type": "Sedan", "year": 2024})',  # noqa: E501
+    '            CarModel.objects.get_or_create(car_make=honda, name="CR-V", dealer_id=dealer.id, defaults={"car_type": "SUV", "year": 2024})',  # noqa: E501
+    '            CarModel.objects.get_or_create(car_make=ford, name="F-150", dealer_id=dealer.id, defaults={"car_type": "SUV", "year": 2023})',  # noqa: E501
+    "            if not dealer.reviews.exists():",
+    '                DealerReview.objects.create(dealer=dealer, name="Alex", purchase=True, purchase_date="2024-05-01", car_make="Toyota", car_model="Camry", car_year=2024, sentiment="positive", review="Great service and a fair price. Excellent experience overall.")',  # noqa: E501
     '        self.stdout.write(self.style.SUCCESS("Seeded 50 dealers, 3 makes, 150 car models, 50 reviews."))',
-    '',
+    "",
 ]
 seed_path = ROOT / "djangoapp" / "management" / "commands" / "seed_dealership.py"
 seed_path.write_text("\n".join(lines))
@@ -109,37 +113,47 @@ print(f"wrote {seed_path} ({len(DEALERS)} dealers)")
 js_dealers = []
 for i, d in enumerate(DEALERS, start=1):
     full, short, city, addr, state, zipc, lat, lng = d
-    js_dealers.append(f'  {{ id: {i}, full_name: "{full}", short_name: "{short}", city: "{city}", address: "{addr}", state: "{state}", zip: "{zipc}", lat: {lat}, long: {lng} }},')
+    js_dealers.append(
+        f'  {{ id: {i}, full_name: "{full}", short_name: "{short}", city: "{city}", address: "{addr}", state: "{state}", zip: "{zipc}", lat: {lat}, long: {lng} }},'  # noqa: E501
+    )
 js_models = []
 mid = 1
 for i in range(1, 51):
-    for name, ctype, year, make in [("Camry", "Sedan", 2024, "Toyota"), ("CR-V", "SUV", 2024, "Honda"), ("F-150", "SUV", 2023, "Ford")]:
-        js_models.append(f'  {{ id: {mid}, name: "{name}", car_type: "{ctype}", year: {year}, dealer_id: {i}, car_make: "{make}" }},')
+    for name, ctype, year, make in [
+        ("Camry", "Sedan", 2024, "Toyota"),
+        ("CR-V", "SUV", 2024, "Honda"),
+        ("F-150", "SUV", 2023, "Ford"),
+    ]:
+        js_models.append(
+            f'  {{ id: {mid}, name: "{name}", car_type: "{ctype}", year: {year}, dealer_id: {i}, car_make: "{make}" }},'
+        )
         mid += 1
-data_js = "\n".join([
-    "// Demo data only — mirrors the Django seed in",
-    "// ~/workspace/course12-capstone/djangoapp/management/commands/seed_dealership.py",
-    "// (50 dealers, 3 car makes, 150 car models). In-memory; no database required.",
-    "",
-    "const dealers = [",
-    *js_dealers,
-    "];",
-    "",
-    "const makes = [",
-    '  { id: 1, name: "Toyota", description: "Japanese car maker" },',
-    '  { id: 2, name: "Honda", description: "Japanese car maker" },',
-    '  { id: 3, name: "Ford", description: "American car maker" },',
-    "];",
-    "",
-    "// One Camry (Toyota, Sedan, 2024), one CR-V (Honda, SUV, 2024) and one",
-    "// F-150 (Ford, SUV, 2023) per dealer — 150 models total, matching the seed.",
-    "const models = [",
-    *js_models,
-    "];",
-    "",
-    "module.exports = { dealers, makes, models };",
-    "",
-])
+data_js = "\n".join(
+    [
+        "// Demo data only — mirrors the Django seed in",
+        "// ~/workspace/course12-capstone/djangoapp/management/commands/seed_dealership.py",
+        "// (50 dealers, 3 car makes, 150 car models). In-memory; no database required.",
+        "",
+        "const dealers = [",
+        *js_dealers,
+        "];",
+        "",
+        "const makes = [",
+        '  { id: 1, name: "Toyota", description: "Japanese car maker" },',
+        '  { id: 2, name: "Honda", description: "Japanese car maker" },',
+        '  { id: 3, name: "Ford", description: "American car maker" },',
+        "];",
+        "",
+        "// One Camry (Toyota, Sedan, 2024), one CR-V (Honda, SUV, 2024) and one",
+        "// F-150 (Ford, SUV, 2023) per dealer — 150 models total, matching the seed.",
+        "const models = [",
+        *js_models,
+        "];",
+        "",
+        "module.exports = { dealers, makes, models };",
+        "",
+    ]
+)
 dealers_js = ROOT / "services" / "dealers-service" / "data.js"
 dealers_js.write_text(data_js)
 print(f"wrote {dealers_js}")
@@ -147,19 +161,23 @@ print(f"wrote {dealers_js}")
 # --- Node reviews data.js (one seeded review per dealer) ---
 js_reviews = []
 for i in range(1, 51):
-    js_reviews.append(f'  {{ id: {i}, dealer_id: {i}, name: "Alex", purchase: true, purchase_date: "2024-05-01", car_make: "Toyota", car_model: "Camry", car_year: 2024, sentiment: "positive", review: "Great service and a fair price. Excellent experience overall." }},')
-reviews_js = "\n".join([
-    "// Demo data only — mirrors the Django seed in",
-    "// ~/workspace/course12-capstone/djangoapp/management/commands/seed_dealership.py",
-    "// (one review per dealer, 50 total). In-memory; no database required.",
-    "",
-    "const reviews = [",
-    *js_reviews,
-    "];",
-    "",
-    "module.exports = { reviews };",
-    "",
-])
+    js_reviews.append(
+        f'  {{ id: {i}, dealer_id: {i}, name: "Alex", purchase: true, purchase_date: "2024-05-01", car_make: "Toyota", car_model: "Camry", car_year: 2024, sentiment: "positive", review: "Great service and a fair price. Excellent experience overall." }},'  # noqa: E501
+    )
+reviews_js = "\n".join(
+    [
+        "// Demo data only — mirrors the Django seed in",
+        "// ~/workspace/course12-capstone/djangoapp/management/commands/seed_dealership.py",
+        "// (one review per dealer, 50 total). In-memory; no database required.",
+        "",
+        "const reviews = [",
+        *js_reviews,
+        "];",
+        "",
+        "module.exports = { reviews };",
+        "",
+    ]
+)
 reviews_path = ROOT / "services" / "reviews-service" / "data.js"
 reviews_path.write_text(reviews_js)
 print(f"wrote {reviews_path}")
