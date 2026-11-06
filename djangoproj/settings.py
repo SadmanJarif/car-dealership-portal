@@ -48,7 +48,10 @@ STATICFILES_DIRS = [BASE_DIR / "djangoapp" / "static"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+# No LOGOUT_REDIRECT_URL: Django's admin logout then renders the real
+# admin/logged_out.html "You are now logged out" page instead of
+# redirecting to "/". (The site's own logout_view redirects to index
+# itself, so the public Logout link is unaffected.)
 # Back-end service endpoints (IBM capstone proxy pattern).
 # Unset in local dev: restapis.py falls back to the local SQLite database.
 # Set e.g. DEALERS_API_URL=http://localhost:3030 to proxy a Node/Mongo dealers service.
