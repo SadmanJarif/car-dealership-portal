@@ -1,8 +1,10 @@
 # Car Dealership Portal — IBM Full Stack Capstone (Course 12)
+# Project: fullstack_developer_capstone
 
 Full-stack build of the IBM Full Stack Software Developer capstone
 project: Django back end + React front end + Node.js dealers/reviews
-back-end services, all in this repo. **Not submitted to Coursera / Mark
+back-end services, all in this repo. Course project name:
+**fullstack_developer_capstone**. **Not submitted to Coursera / Mark
 yet — published to GitHub at https://github.com/SadmanJarif/car-dealership-portal.**
 (See `RETAKE-ANSWERS.md` for the checklist retake sheet and `SUMMARY.md`
 for verification evidence.)
